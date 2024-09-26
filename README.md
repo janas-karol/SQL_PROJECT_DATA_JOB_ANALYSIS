@@ -168,6 +168,89 @@ Breakwown of the results for top paying skills for Data Analyst:
 | GCP             | 122,500              |
 | MicroStrategy   | 121,619              |
 
+## 5. Most Optimal Skills to Learn
+Combining insights from demand and salary data, this query aimed to point skills that are both in high demand and have high salaries, offering strategic focus for skill development.
+```sql
+WITH skills_demand AS (
+    SELECT 
+        skills_dim.skill_id,
+        skills_dim.skills,
+        COUNT(skills_job_dim.job_id) AS demand_count
+    FROM
+        job_postings_fact
+    INNER JOIN skills_job_dim ON job_postings_fact.job_id = skills_job_dim.job_id
+    INNER JOIN skills_dim ON skills_job_dim.skill_id = skills_dim.skill_id
+    WHERE
+        job_title_short = 'Data Analyst'
+        AND salary_year_avg IS NOT NULL
+        AND job_work_from_home = True
+    GROUP BY
+        skills_dim.skill_id
+), average_salary AS (
+    SELECT 
+        skills_job_dim.skill_id,
+        ROUND(AVG(salary_year_avg), 0) AS avg_salary
+    FROM
+        job_postings_fact
+    INNER JOIN skills_job_dim ON job_postings_fact.job_id = skills_job_dim.job_id
+    INNER JOIN skills_dim ON skills_job_dim.skill_id = skills_dim.skill_id
+    WHERE
+        job_title_short = 'Data Analyst'
+        AND salary_year_avg IS NOT NULL
+        AND job_work_from_home = True
+    GROUP BY
+        skills_job_dim.skill_id
+)
+
+SELECT
+    skills_demand.skill_id,
+    skills_demand.skills,
+    demand_count,
+    avg_salary
+FROM 
+    skills_demand
+INNER JOIN average_salary ON skills_demand.skill_id = average_salary.skill_id
+WHERE
+    demand_count > 10
+ORDER BY
+    avg_salary DESC,
+    demand_count DESC
+LIMIT 25
+```
+| Skill ID | Skill         | Demand Count | Average Salary (USD) |
+|----------|---------------|--------------|----------------------|
+| 8        | Go            | 27           | 115,320              |
+| 234      | Confluence    | 11           | 114,210              |
+| 97       | Hadoop        | 22           | 113,193              |
+| 80       | Snowflake     | 37           | 112,948              |
+| 74       | Azure         | 34           | 111,225              |
+| 77       | BigQuery      | 13           | 109,654              |
+| 76       | AWS           | 32           | 108,317              |
+| 4        | Java          | 17           | 106,906              |
+| 194      | SSIS          | 12           | 106,683              |
+| 233      | Jira          | 20           | 104,918              |
+| 79       | Oracle        | 37           | 104,534              |
+| 185      | Looker        | 49           | 103,795              |
+| 2        | NoSQL         | 13           | 101,414              |
+| 1        | Python        | 236          | 101,397              |
+| 5        | R             | 148          | 100,499              |
+| 78       | Redshift      | 16           | 99,936               |
+| 187      | Qlik          | 13           | 99,631               |
+| 182      | Tableau       | 230          | 99,288               |
+| 197      | SSRS          | 14           | 99,171               |
+| 92       | Spark         | 13           | 99,077               |
+| 13       | C++           | 11           | 98,958               |
+| 186      | SAS           | 63           | 98,902               |
+| 7        | SAS           | 63           | 98,902               |
+| 61       | SQL Server    | 35           | 97,786               |
+| 9        | JavaScript    | 20           | 97,587               |
+
+*Table of the most optimal skills for data analyst sorted by salary*
+
+Breakdown of the most optimal skills for Data Analyst:
+- High demand **Programming Languages**: Python and R stand out for their high demand.
+- **Cloud Tools and Technologies**: skills in technologies such as Snowflake, Azure, AWS amd BigQuery show significant demand with relatively high salaries.
+
 # What I Learned
 
 # Conclusions
