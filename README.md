@@ -86,9 +86,11 @@ ORDER BY
 Breakdown of the most demanded skills for top 10 highest paying data analyst jobs:
 - **SQL** is leading with count of 8.
 - **Python** follow closely with count of 7.
-- **Tableau** is also highly sought after with count of 6
+- **Tableau** is also highly sought after with count of 6.
+
 ![Top Paying Skills](top_skills_chart.png)
 *Bar graph visualizing most demanded skills for top-paying jobs, generated in Excel from SQL query results* 
+
 ### 3. In-Demand Skills for Data Analyst
 This query helped identify the skills most frequently requested in job postings, directing focus to areas with high demand. 
 ```sql
@@ -110,6 +112,61 @@ LIMIT 5
 Breakdown of the most demanded skills for data analyst:
 - **SQL** and **Excel** are fundamental, data processing and spreadsheet manipulation are foundation for Data Analyst role.
 - **Programming** and **Visualization Tools** like **Python**, **Tableau** and **Power BI** are essential, pointing towards increasing importance of technical skills in the data storytelling and decision support. 
+
+![Most Demanded Skills](most_demanded_skills.png)
+*Bar graph visualizing 5 most demanded skills for Data Analyst, generated in Excel from SQL query results* 
+
+### 4. Skills Based on Salary
+Exploring the average salaries associated with different skills revelead which skills are the highest paying.
+```sql
+SELECT 
+    skills,
+    ROUND(AVG(salary_year_avg), 0) AS avg_salary
+FROM
+    job_postings_fact
+INNER JOIN skills_job_dim ON job_postings_fact.job_id = skills_job_dim.job_id
+INNER JOIN skills_dim ON skills_job_dim.skill_id = skills_dim.skill_id
+WHERE
+    job_title_short = 'Data Analyst'
+    AND salary_year_avg IS NOT NULL
+GROUP BY
+    skills
+ORDER BY
+    avg_salary DESC
+LIMIT 25
+```
+Breakwown of the results for top paying skills for Data Analyst:
+- **Big Data** and **Maching Learning**: top salaries require skills in big data technologies (PySpark, Couchbase), machine learning tools (DataRobot, Jupyter) and Python libraries (Pandas, NumPy).
+- **Development** and **Deployment**: knowledge of tools like GitLab, Kubernetes, Airflow indicates a lucrative crossover between data analysis and engineering.
+- **Cloud Computing Expertise**: cloud and data engineering tools (Elasticsearch, Databricks, GCP) suggest that cloud proficiency can significantly boost earning potential in data analytics.
+
+| Skill           | Average Salary (USD) |
+|-----------------|----------------------|
+| PySpark         | 208,172              |
+| Bitbucket       | 189,155              |
+| Couchbase       | 160,515              |
+| Watson          | 160,515              |
+| DataRobot       | 155,486              |
+| GitLab          | 154,500              |
+| Swift           | 153,750              |
+| Jupyter         | 152,777              |
+| Pandas          | 151,821              |
+| Elasticsearch   | 145,000              |
+| GoLang          | 145,000              |
+| NumPy           | 143,513              |
+| Databricks      | 141,907              |
+| Linux           | 136,508              |
+| Kubernetes      | 132,500              |
+| Atlassian       | 131,162              |
+| Twilio          | 127,000              |
+| Airflow         | 126,103              |
+| Scikit-learn    | 125,781              |
+| Jenkins         | 125,436              |
+| Notion          | 125,000              |
+| Scala           | 124,903              |
+| PostgreSQL      | 123,879              |
+| GCP             | 122,500              |
+| MicroStrategy   | 121,619              |
 
 # What I Learned
 
